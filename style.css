@@ -204,7 +204,7 @@ body {
   gap: 10px;
   flex-wrap: wrap;
   justify-content: center;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
 .feature-item {
@@ -214,6 +214,20 @@ body {
   border-radius: 12px;
   font-size: 0.8rem;
   color: var(--text-muted);
+}
+
+/* Welcome Author Footer */
+.welcome-author-footer {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: var(--text-gold);
+  background: rgba(250, 204, 21, 0.12);
+  border: 1px solid rgba(250, 204, 21, 0.35);
+  padding: 6px 20px;
+  border-radius: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(250, 204, 21, 0.15);
 }
 
 /* =========================================================
