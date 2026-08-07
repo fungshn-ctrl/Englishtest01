@@ -1,5 +1,5 @@
 /* =========================================================
-   國中英文單字直覺配對王 - JavaScript Core Engine (關卡晉級版)
+   國中英文單字直覺配對王 - JavaScript Core Engine (首頁 QR Code 版)
    ========================================================= */
 
 // Vocabulary Database divided into progressive Levels (每關 3 個單字)
@@ -51,6 +51,10 @@ let soundEnabled = true;
 let activeRoundWords = [];
 
 // DOM Elements
+const welcomeScreen = document.getElementById('welcomeScreen');
+const btnStartQrCode = document.getElementById('btnStartQrCode');
+const appContainer = document.getElementById('appContainer');
+
 const levelBadge = document.getElementById('levelBadge');
 const timerDisplay = document.getElementById('timerDisplay');
 const timerBar = document.getElementById('timerBar');
@@ -90,7 +94,21 @@ function playSound(type) {
 
   const now = audioCtx.currentTime;
 
-  if (type === 'select') {
+  if (type === 'start') {
+    // Game start fanfare tone
+    [440, 554.37, 659.25, 880].forEach((freq, idx) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+      gain.gain.setValueAtTime(0.3, now + idx * 0.06);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.06 + 0.25);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now + idx * 0.06);
+      osc.stop(now + idx * 0.06 + 0.25);
+    });
+  } else if (type === 'select') {
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.type = 'sine';
@@ -179,11 +197,21 @@ function speakWord(text) {
   window.speechSynthesis.speak(utterance);
 }
 
-// Initialize Application
+// Initialize Application (Shows Landing Screen initially)
 function initApp() {
   highScoreDisplay.textContent = highScore;
   createBackgroundBubbles();
   setupEventListeners();
+}
+
+// Enter Game from Landing Screen upon clicking QR Code
+function enterGame() {
+  initAudio();
+  playSound('start');
+
+  welcomeScreen.style.display = 'none';
+  appContainer.style.display = 'flex';
+
   loadLevel(1);
 }
 
@@ -210,7 +238,6 @@ function getWordsForLevel(lvl) {
   if (LEVEL_VOCABULARY[index]) {
     return LEVEL_VOCABULARY[index];
   }
-  // Fallback random 3 from EXTRA_POOL
   return [...EXTRA_POOL].sort(() => Math.random() - 0.5).slice(0, 3);
 }
 
@@ -544,6 +571,9 @@ function renderWordsReview() {
 
 // Event Listeners
 function setupEventListeners() {
+  // QR Code Landing trigger to enter game
+  btnStartQrCode.addEventListener('click', enterGame);
+
   // Top Dashboard Restart button (Retry current level)
   btnRestart.addEventListener('click', () => {
     initAudio();
