@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>國中英文單字直覺配對王 | 關卡晉級挑戰</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Floating animated background elements -->
+  <div class="bg-bubbles" id="bgBubbles"></div>
+
+  <!-- Main Container -->
+  <div class="app-container">
+    
+    <!-- Game Header -->
+    <header class="game-header">
+      <div class="header-badges">
+        <span class="title-badge">國中教育階段 ‧ 色鉛筆插效版</span>
+        <span class="level-badge" id="levelBadge">🚩 第 1 關</span>
+      </div>
+      <h1 class="game-title">⚡ 15秒單字圖片關卡配對 ⚡</h1>
+      <p class="game-subtitle" id="gameSubtitle">必須在 15 秒內通過本關 3 組單字，才能解鎖下一關全新的 3 個單字！</p>
+    </header>
+
+    <!-- Score & Timer Dashboard -->
+    <section class="dashboard">
+      <!-- Time Card -->
+      <div class="dash-card timer-card">
+        <div class="dash-icon">⏱️</div>
+        <div class="dash-info">
+          <span class="dash-label">剩餘時間</span>
+          <span class="dash-value" id="timerDisplay">15.0<small>s</small></span>
+        </div>
+        <div class="timer-bar-container">
+          <div class="timer-bar" id="timerBar"></div>
+        </div>
+      </div>
+
+      <!-- Current Score Card -->
+      <div class="dash-card score-card">
+        <div class="dash-icon">🌟</div>
+        <div class="dash-info">
+          <span class="dash-label">目前總分</span>
+          <span class="dash-value" id="scoreDisplay">0</span>
+        </div>
+      </div>
+
+      <!-- High Score Card -->
+      <div class="dash-card highscore-card">
+        <div class="dash-icon">🏆</div>
+        <div class="dash-info">
+          <span class="dash-label">最高紀錄</span>
+          <span class="dash-value" id="highScoreDisplay">0</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="dashboard-actions">
+        <button class="btn btn-restart" id="btnRestart" title="重新挑戰本關">
+          <span class="btn-icon">🔄</span> 重玩按鈕
+        </button>
+        <button class="btn btn-sound" id="btnSound" title="切換音效">
+          <span class="btn-icon" id="soundIcon">🔊</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Match Progress -->
+    <div class="match-progress">
+      <span id="progressText">本關配對進度：</span>
+      <div class="progress-dots" id="progressDots">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+    </div>
+
+    <!-- Direct Matching Arena (Left: Words Column, Right: Images Column) -->
+    <main class="matching-arena">
+      <div class="matching-column column-words">
+        <h3 class="column-title">🔤 英文單字</h3>
+        <div class="cards-list" id="wordsListColumn">
+          <!-- Dynamic 3 Word cards -->
+        </div>
+      </div>
+
+      <div class="matching-vs-divider">
+        <span>VS</span>
+      </div>
+
+      <div class="matching-column column-images">
+        <h3 class="column-title">🎨 色鉛筆圖案</h3>
+        <div class="cards-list" id="imagesListColumn">
+          <!-- Dynamic 3 Image cards -->
+        </div>
+      </div>
+    </main>
+
+    <!-- Game Footer -->
+    <footer class="game-footer">
+      <span>💡 操作說明：點選單字與對應色鉛筆圖片進行配對，配對成功後會公開中文翻譯與美語發音！</span>
+    </footer>
+
+  </div>
+
+  <!-- Game Over / Victory Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-card">
+      <div class="modal-header" id="modalHeader">
+        <div class="modal-badge" id="modalBadge">關卡通關</div>
+        <h2 class="modal-title" id="modalTitle">🎉 太厲害了！</h2>
+      </div>
+
+      <!-- Stars rating -->
+      <div class="stars-container" id="starsContainer">
+        <span class="star">⭐</span>
+        <span class="star">⭐</span>
+        <span class="star">⭐</span>
+      </div>
+
+      <!-- Score Summary Details -->
+      <div class="score-breakdown">
+        <div class="breakdown-row">
+          <span>⏱️ 通關所用時間</span>
+          <strong id="timeUsedText">-- s</strong>
+        </div>
+        <div class="breakdown-row">
+          <span>🎯 配對基礎分</span>
+          <strong id="baseScoreText">1,500</strong>
+        </div>
+        <div class="breakdown-row highlight">
+          <span>🚀 速度獎勵加成</span>
+          <strong id="speedBonusText">+0</strong>
+        </div>
+        <div class="breakdown-row highlight">
+          <span>✨ 完美無錯獎勵</span>
+          <strong id="accuracyBonusText">+0</strong>
+        </div>
+        <hr class="breakdown-divider">
+        <div class="breakdown-row total-score">
+          <span>🏆 本局累計總分</span>
+          <strong id="finalScoreText">0</strong>
+        </div>
+      </div>
+
+      <!-- Words Learned Review -->
+      <div class="words-review">
+        <h4>📚 本關卡學習單字：</h4>
+        <div class="words-list" id="wordsReviewList">
+          <!-- JS inserts words review cards with audio triggers -->
+        </div>
+      </div>
+
+      <!-- Modal Action Buttons -->
+      <div class="modal-actions">
+        <button class="btn btn-primary btn-large" id="btnModalAction">
+          <span class="btn-icon" id="modalActionIcon">➡️</span> <span id="modalActionText">進入下一關！</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Canvas for Confetti particle effects -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <script src="script.js"></script>
+</body>
+</html>
